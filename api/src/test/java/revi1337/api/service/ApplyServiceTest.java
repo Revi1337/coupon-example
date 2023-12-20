@@ -1,5 +1,6 @@
 package revi1337.api.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,10 @@ class ApplyServiceTest {
 
     @Autowired ApplyService applyService;
     @Autowired CouponRepository couponRepository;
+
+    @AfterEach
+    void afterEach() {
+    }
     
     @Test
     public void 한번만응모() {

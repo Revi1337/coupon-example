@@ -3,6 +3,7 @@ package revi1337.api.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import revi1337.api.domain.Coupon;
+import revi1337.api.repository.CouponCountRepository;
 import revi1337.api.repository.CouponRepository;
 
 @Service
@@ -10,9 +11,10 @@ import revi1337.api.repository.CouponRepository;
 public class ApplyService {
 
     private final CouponRepository couponRepository;
+    private final CouponCountRepository couponCountRepository;
 
     public void apply(Long userId) {
-        long count = couponRepository.count();
+        Long count = couponCountRepository.increment();
         if (count > 100) {
             return;
         }

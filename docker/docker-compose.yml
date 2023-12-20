@@ -7,6 +7,9 @@ services:
       MYSQL_DATABASE: coupon_example
       MYSQL_ROOT_PASSWORD: 1234
     ports:
-      - "9990:3306"
-  coupon-redis:
+      - "9004:3306"
+
+  redis:
     image: redis
+    ports:
+      - "6379:6379"

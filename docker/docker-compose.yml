@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  local-db:
+    image: mysql:8-oracle
+    environment:
+      MYSQL_DATABASE: coupon_example
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - "9990:3306"

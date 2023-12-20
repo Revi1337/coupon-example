@@ -124,4 +124,78 @@ logging:
     sql: debug
 ```
 
+### Consumer 설정파일 작성
 
+```java
+@Configuration
+public class KafkaConsumerConfig {
+
+    /**
+     * Consumer 인스턴스를 생성하는데 필요한 설정을 설정
+     */
+    @Bean
+    public ConsumerFactory<String, Long> consumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_1");
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
+
+    /**
+     * Topic 으로부터 메시지를 전달받기 위한 KafkaListenerContainerFactory 를 생성
+     */
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Long> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Long> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+}
+```
+
+### Topic 에 전송된 데이터를 가져오기위한 Consumer 클래스 작성
+
+```java
+/**
+ * Topic 에 전송된 데이터를 가져오기위한 클래스 작성
+ */
+@Component
+public class CouponCreatedConsumer {
+
+    @KafkaListener(topics = "coupon_create", groupId = "group_1")
+    public void listener(Long userId) {
+        System.out.println(userId);
+    }
+}
+```
+
+### Consumer 모듈 실행
+
+Consumer 모듈을 실행하면, Consumer 설정파일에 작성한내용을 토대로 
+Topic 에 들어오는 데이터를 들어오길 Listen 한다.
+
+### Producer 모듈 실행
+
+이제 Producer 모듈을 실행해주면 해당 모듈에서 Topic 으로 데이터를 전송하고
+이를 Listen 하고 있던 Consumer 모듈이 동작하게 된다.
+
+### Consumer 로 받은 데이터를 변경
+
+Consumer 로 받은 Topic 의 데이터를 변경하려면 Consumer 클래스에서 레포지토리를 주입받아
+그냥 사용해주면된다.
+
+```java
+@Component
+@RequiredArgsConstructor
+public class CouponCreatedConsumer {
+
+    private final CouponRepository couponRepository;
+
+    @KafkaListener(topics = "coupon_create", groupId = "group_1")
+    public void listener(Long userId) {
+        couponRepository.save(new Coupon(userId));
+    }
+}
+```

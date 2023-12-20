@@ -62,4 +62,28 @@ class ApplyServiceTest {
         assertThat(count).isEqualTo(100);
     }
 
+    @Test
+    public void 한명당_한개의쿠폰만_발급() throws InterruptedException {
+        int threadCount = 500;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        IntStream.range(0, threadCount).forEach(num -> {
+            executorService.submit(() -> {
+                try {
+                    applyService.apply(1L);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        });
+
+        countDownLatch.await();
+
+        Thread.sleep(10000);
+
+        long count = couponRepository.count();
+        assertThat(count).isEqualTo(1);
+    }
+
 }

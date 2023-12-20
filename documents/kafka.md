@@ -91,3 +91,37 @@ $ docker exec -it kakfa kafka-console-consumer.sh --topic coupon_create --bootst
 애플리케이션을 실행하면 Spring 에서 데이터가 Topic 으로 전송되고, Consumer 프롬프트에서
 데이터가 들어오는 것을 확인할 수 있음.
 
+
+## Spring 에서 kafaka 셋팅 (Consumer 셋팅)
+
+### Consumer 모듈 생성
+
+여기서는 멀티모듈로 진행되기 때문에 spring-kafka, jpa, mysql 의존성을 추가하고 모듈 생성해준다.
+
+### yml 복사
+
+이전 Procuder 모듈에서 사용한 yml 을 그대로 복붙해준다.
+
+```yml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:9004/coupon_example
+    username: root
+    password: 1234
+
+  data:
+    redis:
+      host: host.docker.internal
+      port: 6379
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+logging:
+  level:
+    sql: debug
+```
+
+

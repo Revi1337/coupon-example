@@ -1,10 +1,13 @@
 package revi1337.api.service;
 
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import revi1337.api.repository.CouponCountRepository;
 import revi1337.api.repository.CouponRepository;
 
 import java.util.concurrent.CountDownLatch;
@@ -19,9 +22,11 @@ class ApplyServiceTest {
 
     @Autowired ApplyService applyService;
     @Autowired CouponRepository couponRepository;
+    @Autowired CouponCountRepository couponCountRepository;
 
-    @AfterEach
-    void afterEach() {
+    @BeforeEach
+    void beforeEach() {
+        couponCountRepository.clear();
     }
     
     @Test
